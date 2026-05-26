@@ -170,7 +170,7 @@
   .badge-ret { background: var(--ret-bg); color: var(--ret-fg); }
   .badge-dev { background: var(--dev-bg); color: var(--dev-fg); }
 
-  .cert-no { font-family: inherit; font-size: 13px; color: var(--text); }
+
 
   /* ========= NO RESULT ========= */
   .no-result { text-align: center; padding: 60px 20px; color: var(--muted); display: none; }
@@ -180,6 +180,47 @@
     text-align: center; padding: 24px; font-size: 12px;
     color: var(--muted); border-top: 1px solid var(--border); margin-top: 16px;
   }
+
+  /* ========= QR BUTTON ========= */
+  .btn-qr {
+    background: var(--primary); color: white; border: none; cursor: pointer;
+    font-family: inherit; font-size: 11px; font-weight: 600;
+    padding: 5px 11px; border-radius: 8px; display: flex; align-items: center; gap: 5px;
+    transition: background .2s; white-space: nowrap;
+  }
+  .btn-qr:hover { background: #0d2640; }
+
+  /* ========= QR MODAL ========= */
+  .qr-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.55); z-index: 999;
+    align-items: center; justify-content: center;
+  }
+  .qr-overlay.show { display: flex; }
+  .qr-modal {
+    background: white; border-radius: 20px; padding: 32px 28px 24px;
+    text-align: center; max-width: 320px; width: 90%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    position: relative;
+  }
+  .qr-modal h3 { font-size: 16px; font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+  .qr-modal p  { font-size: 12px; color: var(--muted); margin-bottom: 20px; }
+  .qr-box { display: flex; justify-content: center; margin-bottom: 20px; }
+  .qr-box canvas, .qr-box img { border-radius: 8px; }
+  .qr-nik { font-size: 11px; color: var(--muted); margin-bottom: 16px; font-family: monospace; }
+  .btn-qr-close {
+    background: var(--accent); color: white; border: none; cursor: pointer;
+    font-family: inherit; font-size: 13px; font-weight: 600;
+    padding: 10px 24px; border-radius: 10px; width: 100%; transition: background .2s;
+  }
+  .btn-qr-close:hover { background: #d44d1f; }
+  .btn-qr-download {
+    background: white; color: var(--primary); border: 2px solid var(--primary); cursor: pointer;
+    font-family: inherit; font-size: 13px; font-weight: 600;
+    padding: 9px 24px; border-radius: 10px; width: 100%; transition: all .2s;
+    margin-bottom: 10px;
+  }
+  .btn-qr-download:hover { background: var(--primary); color: white; }
 
   /* ========= PRINT STYLES ========= */
   @media print {
@@ -234,6 +275,7 @@
     table.trn-table th, table.trn-table td { padding: 8px 10px; }
   }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 
@@ -277,6 +319,18 @@
   <p>Tidak ditemukan hasil untuk pencarian ini</p>
 </div>
 
+<!-- QR Modal -->
+<div class="qr-overlay" id="qrOverlay" onclick="closeQR(event)">
+  <div class="qr-modal">
+    <h3 id="qrName"></h3>
+    <p id="qrJabatan"></p>
+    <div class="qr-box" id="qrBox"></div>
+    <div class="qr-nik" id="qrNik"></div>
+    <button class="btn-qr-download" onclick="downloadQR()">⬇️ Download QR</button>
+    <button class="btn-qr-close" onclick="document.getElementById('qrOverlay').classList.remove('show')">Tutup</button>
+  </div>
+</div>
+
 <footer>Record Sertifikat Pelatihan Personil &bull; SMU Training &bull; 2025–2026</footer>
 
 <script>
@@ -284,7 +338,7 @@
    * KONFIGURASI — Ganti URL_APPS_SCRIPT dengan URL
    * deployment Web App Google Apps Script Anda
    * ===================================================== */
-  const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbyyeT2fOi112b-HG6DP7z_cx-zpUcsZK7FHp_zvEQuYvV5ZGYzft7H9tEO6rn-l0eSH/exec';
+  const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbzQ00-7EgisyHnK5K7ddErTmqwxZAW2opaVf4WoxZi5qgpya0FYZ7FgFtBZwQpOQFXW/exec';
 
   /* =====================================================
    * State global
@@ -316,6 +370,7 @@
       document.getElementById('searchInput').disabled = false;
       initStats();
       renderCards(DATA);
+      checkNikParam();
     } catch (err) {
       console.error('Gagal memuat data:', err);
       document.getElementById('content').innerHTML = '';
@@ -403,7 +458,7 @@
         <td class="td-date">${dateCell}</td>
         <td style="white-space:nowrap">${t.durasi ? t.durasi+' jam' : '-'}</td>
         <td><span class="badge ${katClass}">${t.kategori || '-'}</span></td>
-        <td><span class="cert-no">${t.cert || '-'}</span></td>
+        <td style="white-space:nowrap">${t.cert || '-'}</td>
       </tr>`;
     }).join('');
   }
@@ -442,6 +497,7 @@
           <div class="person-right">
             <span class="trn-count">${p.pelatihan.length} pelatihan</span>
             <button class="btn-print-card" onclick="printCard(event,${idx})">🖨️ Print</button>
+            <button class="btn-qr" onclick="showQR(event,'${p.nik}','${p.nama}','${p.jabatan}')">📱 QR</button>
             <span class="chevron">⌄</span>
           </div>
         </div>
@@ -495,6 +551,79 @@
         p.pelatihan.some(t => t.judul.toLowerCase().includes(q) || (t.cert||'').toLowerCase().includes(q))
       ));
     }, 200);
+  }
+
+  /* ---- QR Code ---- */
+  let currentQRCanvas = null;
+
+  function showQR(e, nik, nama, jabatan) {
+    e.stopPropagation();
+    const baseUrl = window.location.href.split('?')[0];
+    const url = `${baseUrl}?nik=${nik}`;
+
+    document.getElementById('qrName').textContent = nama;
+    document.getElementById('qrJabatan').textContent = jabatan;
+    document.getElementById('qrNik').textContent = `NIK: ${nik}`;
+
+    const box = document.getElementById('qrBox');
+    box.innerHTML = '';
+    new QRCode(box, {
+      text: url,
+      width: 200,
+      height: 200,
+      colorDark: '#1a3a5c',
+      colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.H
+    });
+
+    setTimeout(() => {
+      currentQRCanvas = box.querySelector('canvas') || box.querySelector('img');
+    }, 100);
+
+    document.getElementById('qrOverlay').classList.add('show');
+  }
+
+  function closeQR(e) {
+    if (e.target.id === 'qrOverlay') {
+      document.getElementById('qrOverlay').classList.remove('show');
+    }
+  }
+
+  function downloadQR() {
+    const box = document.getElementById('qrBox');
+    const canvas = box.querySelector('canvas');
+    const img    = box.querySelector('img');
+    const nama   = document.getElementById('qrName').textContent.replace(/\s+/g, '_');
+
+    if (canvas) {
+      const a = document.createElement('a');
+      a.download = `QR_${nama}.png`;
+      a.href = canvas.toDataURL('image/png');
+      a.click();
+    } else if (img) {
+      const a = document.createElement('a');
+      a.download = `QR_${nama}.png`;
+      a.href = img.src;
+      a.click();
+    }
+  }
+
+  /* ---- Cek URL param ?nik= untuk direct link ---- */
+  function checkNikParam() {
+    const params = new URLSearchParams(window.location.search);
+    const nik = params.get('nik');
+    if (!nik) return;
+    // Filter dan tampilkan hanya personil tersebut, buka card otomatis
+    const found = DATA.filter(p => p.nik === nik);
+    if (found.length) {
+      renderCards(found);
+      setTimeout(() => {
+        const card = document.getElementById('card-0');
+        if (card) card.classList.add('open');
+        // Sembunyikan search bar agar tampil bersih
+        document.getElementById('searchInput').value = '';
+      }, 100);
+    }
   }
 
   /* ---- Mulai ambil data saat halaman dibuka ---- */
