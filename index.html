@@ -159,7 +159,7 @@
   table.trn-table tr:hover td { background: #fafbfc; }
   .td-no { color: var(--muted); font-weight: 600; width: 32px; text-align: center; }
   .td-title { font-weight: 600; color: var(--text); }
-  .td-date { white-space: nowrap; color: var(--muted); }
+  .td-date { white-space: nowrap; color: var(--text); font-size: 13px; font-family: inherit; }
   .date-range { display: flex; flex-direction: column; gap: 2px; }
   .date-end { font-size: 11px; color: #999; }
 
@@ -284,7 +284,7 @@
    * KONFIGURASI — Ganti URL_APPS_SCRIPT dengan URL
    * deployment Web App Google Apps Script Anda
    * ===================================================== */
-  const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbyPdCI9iiCKwk8JtGpMYhGloYeQ363tW0IPrRWuOTCiyyDzzRCtwsjJo_bsjr1UtIAP/exec';
+  const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbyyeT2fOi112b-HG6DP7z_cx-zpUcsZK7FHp_zvEQuYvV5ZGYzft7H9tEO6rn-l0eSH/exec';
 
   /* =====================================================
    * State global
@@ -394,7 +394,7 @@
   function buildRows(pelatihan) {
     return pelatihan.map((t, i) => {
       const katClass = t.kategori === 'Internal' ? 'badge-int' : 'badge-ext';
-      const dateCell = t.tgl_selesai
+      const dateCell = (t.tgl_selesai && t.tgl_selesai !== t.tgl_mulai)
         ? `<div class="date-range"><span>${t.tgl_mulai}</span><span class="date-end">s/d ${t.tgl_selesai}</span></div>`
         : `<span>${t.tgl_mulai}</span>`;
       return `<tr>
