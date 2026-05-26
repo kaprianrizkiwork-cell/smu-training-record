@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Record Sertifikat Pelatihan - SMU Training</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+  /* ========= RESET & BASE ========= */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary: #1a3a5c;
+    --accent:  #f05a28;
+    --gold:    #ffc107;
+    --bg:      #f0f4f8;
+    --card:    #ffffff;
+    --text:    #1e2d40;
+    --muted:   #6b7f93;
+    --border:  #dde3ea;
+    --int-bg:  #e8f4fd; --int-fg: #1565c0;
+    --ext-bg:  #fef3e2; --ext-fg: #b84800;
+    --on-bg:   #e8f5e9; --on-fg:  #2e7d32;
+    --ret-bg:  #fce4ec; --ret-fg: #880e4f;
+    --dev-bg:  #ede7f6; --dev-fg: #4527a0;
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg); color: var(--text); min-height: 100vh;
+  }
+
+  /* ========= HEADER ========= */
+  header {
+    background: linear-gradient(135deg, var(--primary) 0%, #0d2640 100%);
+    padding: 22px 20px 18px;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.22);
+  }
+  .header-top { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+  .logo-icon {
+    width: 46px; height: 46px; background: var(--accent); border-radius: 12px;
+    display: flex; align-items: center; justify-content: center; font-size: 22px;
+    flex-shrink: 0; box-shadow: 0 4px 12px rgba(240,90,40,0.4);
+  }
+  .header-title h1 { font-size: 17px; font-weight: 700; color: #fff; line-height: 1.2; }
+  .header-title p  { font-size: 11px; color: #a8c4dd; margin-top: 2px; }
+  .stats-bar { display: flex; gap: 12px; flex-wrap: wrap; }
+  .stat-item {
+    background: rgba(255,255,255,0.1); border-radius: 8px; padding: 7px 13px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .stat-num { font-size: 19px; font-weight: 700; color: var(--gold); }
+  .stat-lbl { font-size: 11px; color: #b0cde0; font-weight: 500; }
+
+  /* ========= SEARCH BAR ========= */
+  .search-bar {
+    padding: 14px 20px 10px;
+    position: sticky; top: 143px; background: var(--bg);
+    z-index: 90; border-bottom: 1px solid var(--border);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .search-wrap { position: relative; max-width: 620px; margin: 0 auto; }
+  .search-wrap input {
+    width: 100%; padding: 11px 16px 11px 44px;
+    border: 2px solid var(--border); border-radius: 12px;
+    font-family: inherit; font-size: 14px; background: white;
+    outline: none; transition: border-color .2s;
+  }
+  .search-wrap input:focus { border-color: var(--accent); }
+  .s-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 16px; }
+  .result-count { text-align: center; font-size: 12px; color: var(--muted); margin-top: 7px; }
+
+  /* ========= CONTENT ========= */
+  .content { padding: 16px 20px; max-width: 820px; margin: 0 auto; }
+
+  /* ========= LOADING STATE ========= */
+  .loading-state {
+    text-align: center; padding: 60px 20px; color: var(--muted);
+  }
+  .loading-spinner {
+    width: 40px; height: 40px; border: 3px solid var(--border);
+    border-top-color: var(--accent); border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 16px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-state p { font-size: 14px; }
+
+  /* ========= ERROR STATE ========= */
+  .error-state {
+    text-align: center; padding: 60px 20px; display: none;
+  }
+  .error-state .icon { font-size: 48px; margin-bottom: 12px; }
+  .error-state h3 { color: #c0392b; font-size: 16px; margin-bottom: 8px; }
+  .error-state p { color: var(--muted); font-size: 13px; margin-bottom: 16px; max-width: 400px; margin-left: auto; margin-right: auto; }
+  .btn-retry {
+    background: var(--accent); color: white; border: none; cursor: pointer;
+    font-family: inherit; font-size: 13px; font-weight: 600;
+    padding: 10px 20px; border-radius: 10px; transition: background .2s;
+  }
+  .btn-retry:hover { background: #d44d1f; }
+
+  /* ========= PERSON CARD ========= */
+  .person-card {
+    background: var(--card); border-radius: 16px; margin-bottom: 12px;
+    overflow: hidden; border: 1px solid var(--border);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: box-shadow .2s;
+  }
+  .person-card:hover { box-shadow: 0 4px 18px rgba(0,0,0,0.10); }
+  .person-header {
+    display: flex; align-items: center; gap: 13px; padding: 15px 16px;
+    cursor: pointer; user-select: none;
+  }
+  .avatar {
+    width: 44px; height: 44px; border-radius: 12px;
+    background: linear-gradient(135deg, var(--primary), #2e6da4);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 16px; color: white; flex-shrink: 0;
+  }
+  .person-info { flex: 1; min-width: 0; }
+  .person-name { font-weight: 600; font-size: 15px; }
+  .person-meta { font-size: 12px; color: var(--muted); margin-top: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .person-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .trn-count { background: var(--primary); color: #fff; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; }
+
+  /* Print button per card */
+  .btn-print-card {
+    background: var(--accent); color: white; border: none; cursor: pointer;
+    font-family: inherit; font-size: 11px; font-weight: 600;
+    padding: 5px 11px; border-radius: 8px; display: flex; align-items: center; gap: 5px;
+    transition: background .2s; white-space: nowrap;
+  }
+  .btn-print-card:hover { background: #d44d1f; }
+
+  .chevron { color: var(--muted); font-size: 18px; transition: transform .25s; line-height: 1; }
+  .person-card.open .chevron { transform: rotate(180deg); }
+
+  /* ========= TRAININGS LIST ========= */
+  .trainings-list { display: none; border-top: 1px solid var(--border); }
+  .person-card.open .trainings-list { display: block; }
+
+  /* Table inside card */
+  .trn-table-wrap { overflow-x: auto; }
+  table.trn-table {
+    width: 100%; border-collapse: collapse; font-size: 12.5px;
+  }
+  table.trn-table thead tr { background: #f7f9fb; }
+  table.trn-table th {
+    padding: 9px 12px; text-align: left; font-weight: 600;
+    color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .4px;
+    border-bottom: 2px solid var(--border); white-space: nowrap;
+  }
+  table.trn-table td {
+    padding: 10px 12px; border-bottom: 1px solid #f0f3f6;
+    vertical-align: top; line-height: 1.4;
+  }
+  table.trn-table tr:last-child td { border-bottom: none; }
+  table.trn-table tr:hover td { background: #fafbfc; }
+  .td-no { color: var(--muted); font-weight: 600; width: 32px; text-align: center; }
+  .td-title { font-weight: 600; color: var(--text); }
+  .td-date { white-space: nowrap; color: var(--muted); }
+  .date-range { display: flex; flex-direction: column; gap: 2px; }
+  .date-end { font-size: 11px; color: #999; }
+
+  .badge { padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 600; white-space: nowrap; }
+  .badge-int { background: var(--int-bg); color: var(--int-fg); }
+  .badge-ext { background: var(--ext-bg); color: var(--ext-fg); }
+  .badge-on  { background: var(--on-bg);  color: var(--on-fg);  }
+  .badge-ret { background: var(--ret-bg); color: var(--ret-fg); }
+  .badge-dev { background: var(--dev-bg); color: var(--dev-fg); }
+
+  .cert-no { font-family: monospace; font-size: 10px; color: var(--muted); background: var(--bg); padding: 2px 6px; border-radius: 4px; }
+
+  /* ========= NO RESULT ========= */
+  .no-result { text-align: center; padding: 60px 20px; color: var(--muted); display: none; }
+  .no-result .icon { font-size: 48px; margin-bottom: 12px; }
+
+  footer {
+    text-align: center; padding: 24px; font-size: 12px;
+    color: var(--muted); border-top: 1px solid var(--border); margin-top: 16px;
+  }
+
+  /* ========= PRINT STYLES ========= */
+  @media print {
+    @page { margin: 15mm 12mm; size: A4 landscape; }
+
+    body { background: white !important; font-size: 11px; }
+    header, .search-bar, footer, .btn-print-card, .chevron, .trn-count { display: none !important; }
+
+    .content { padding: 0; max-width: 100%; }
+
+    .person-card { display: none !important; border: none; box-shadow: none; margin: 0; border-radius: 0; }
+    .person-card.printing { display: block !important; }
+
+    .person-header { cursor: default; padding: 0 0 10px 0; border-bottom: 2px solid #1a3a5c; margin-bottom: 10px; }
+    .avatar { display: none; }
+    .person-name { font-size: 16px; color: #1a3a5c; }
+    .person-meta { font-size: 11px; color: #555; }
+
+    .trainings-list { display: block !important; border-top: none; }
+    .trn-table-wrap { overflow: visible; }
+
+    table.trn-table { font-size: 10px; }
+    table.trn-table th { font-size: 9px; padding: 6px 8px; background: #e8edf2 !important; color: #333; }
+    table.trn-table td { padding: 6px 8px; }
+    table.trn-table tr:hover td { background: white !important; }
+
+    .badge { border: 1px solid #ccc; background: white !important; color: #333 !important; }
+    .cert-no { background: #f5f5f5 !important; border: 1px solid #ddd; }
+
+    .print-header {
+      display: flex !important;
+      justify-content: space-between; align-items: flex-end;
+      margin-bottom: 16px; padding-bottom: 10px;
+      border-bottom: 3px solid #1a3a5c;
+    }
+    .print-logo { font-size: 20px; font-weight: 800; color: #1a3a5c; }
+    .print-sub  { font-size: 10px; color: #666; }
+    .print-date { font-size: 10px; color: #666; text-align: right; }
+
+    .no-result { display: none !important; }
+  }
+
+  /* Print header (hidden on screen) */
+  .print-header { display: none; }
+
+  /* Responsive */
+  @media (max-width: 480px) {
+    header { padding: 14px 16px 12px; }
+    .search-bar { padding: 10px 16px 8px; }
+    .content { padding: 10px 14px; }
+    .person-header { gap: 10px; padding: 13px 14px; }
+    table.trn-table th, table.trn-table td { padding: 8px 10px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div class="logo-icon">🏗️</div>
+    <div class="header-title">
+      <h1>Record Sertifikat Pelatihan</h1>
+      <p>SMU Training — Data realtime dari Spreadsheet</p>
+    </div>
+  </div>
+  <div class="stats-bar" id="statsBar"></div>
+</header>
+
+<div class="search-bar">
+  <div class="search-wrap">
+    <span class="s-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="Cari nama, NIK, jabatan, atau nama pelatihan…" oninput="filterCards()" disabled>
+  </div>
+  <div class="result-count" id="resultCount"></div>
+</div>
+
+<div class="content" id="content">
+  <!-- Loading State -->
+  <div class="loading-state" id="loadingState">
+    <div class="loading-spinner"></div>
+    <p>Mengambil data dari Spreadsheet...</p>
+  </div>
+</div>
+
+<!-- Error State -->
+<div class="error-state" id="errorState">
+  <div class="icon">⚠️</div>
+  <h3>Gagal Mengambil Data</h3>
+  <p id="errorMsg">Tidak dapat terhubung ke sumber data. Pastikan URL Apps Script sudah benar dan izin akses sudah diberikan.</p>
+  <button class="btn-retry" onclick="loadData()">🔄 Coba Lagi</button>
+</div>
+
+<div class="no-result" id="noResult">
+  <div class="icon">🔎</div>
+  <p>Tidak ditemukan hasil untuk pencarian ini</p>
+</div>
+
+<footer>Record Sertifikat Pelatihan Personil &bull; SMU Training &bull; 2025–2026</footer>
+
+<script>
+  /* =====================================================
+   * KONFIGURASI — Ganti URL_APPS_SCRIPT dengan URL
+   * deployment Web App Google Apps Script Anda
+   * ===================================================== */
+  const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbx6W-bKXsgVJZPJda2tnUE7X-g88tuIvZ3rbyjGzAc_VhFKamE8igtt91Cf_LxKU2LE/exec';
+
+  /* =====================================================
+   * State global
+   * ===================================================== */
+  let DATA = [];
+
+  /* =====================================================
+   * AMBIL DATA DARI APPS SCRIPT
+   * ===================================================== */
+  async function loadData() {
+    // Tampilkan loading, sembunyikan error
+    document.getElementById('loadingState').style.display = 'block';
+    document.getElementById('errorState').style.display  = 'none';
+    document.getElementById('content').innerHTML = '<div class="loading-state" id="loadingState"><div class="loading-spinner"></div><p>Mengambil data dari Spreadsheet...</p></div>';
+    document.getElementById('searchInput').disabled = true;
+    document.getElementById('statsBar').innerHTML   = '';
+    document.getElementById('resultCount').textContent = '';
+
+    try {
+      const res  = await fetch(URL_APPS_SCRIPT);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const json = await res.json();
+
+      if (json.error) throw new Error(json.error);
+      DATA = json.data || json; // support { data: [...] } atau langsung [...]
+
+      // Selesai loading
+      document.getElementById('searchInput').disabled = false;
+      initStats();
+      renderCards(DATA);
+    } catch (err) {
+      console.error('Gagal memuat data:', err);
+      document.getElementById('content').innerHTML = '';
+      document.getElementById('errorState').style.display = 'block';
+      document.getElementById('errorMsg').textContent =
+        `Error: ${err.message}. Pastikan URL Apps Script benar dan mode akses "Anyone".`;
+    }
+  }
+
+  /* ---- helpers ---- */
+  function progClass(trn) {
+    if (trn && trn.includes('Onboarding'))   return 'on';
+    if (trn && trn.includes('Development'))  return 'dev';
+    return 'ret';
+  }
+  function progLabel(trn) { return trn || '-'; }
+  function getInitials(name) {
+    const p = name.trim().split(' ');
+    return p.length >= 2 ? (p[0][0]+p[1][0]).toUpperCase() : p[0].substring(0,2).toUpperCase();
+  }
+
+  /* ---- stats ---- */
+  function initStats() {
+    const tot  = DATA.reduce((s,p) => s + p.pelatihan.length, 0);
+    const uniq = new Set(DATA.flatMap(p => p.pelatihan.map(t => t.judul))).size;
+    document.getElementById('statsBar').innerHTML =
+      `<div class="stat-item"><div class="stat-num">${DATA.length}</div><div class="stat-lbl">Personil</div></div>
+       <div class="stat-item"><div class="stat-num">${tot}</div><div class="stat-lbl">Total Pelatihan</div></div>
+       <div class="stat-item"><div class="stat-num">${uniq}</div><div class="stat-lbl">Jenis Pelatihan</div></div>`;
+  }
+
+  /* ---- build table rows ---- */
+  function buildRows(pelatihan) {
+    return pelatihan.map((t, i) => {
+      const katClass = t.kategori === 'Internal' ? 'badge-int' : 'badge-ext';
+      const pClass   = 'badge-' + progClass(t.trn_program);
+      const dateCell = t.tgl_selesai
+        ? `<div class="date-range"><span>${t.tgl_mulai}</span><span class="date-end">s/d ${t.tgl_selesai}</span></div>`
+        : `<span>${t.tgl_mulai}</span>`;
+      return `<tr>
+        <td class="td-no">${i+1}</td>
+        <td class="td-title">${t.judul}</td>
+        <td class="td-date">${dateCell}</td>
+        <td style="white-space:nowrap">${t.durasi ? t.durasi+' jam' : '-'}</td>
+        <td><span class="badge ${katClass}">${t.kategori || '-'}</span></td>
+        <td><span class="badge ${pClass}">${progLabel(t.trn_program)}</span></td>
+        <td><span class="cert-no">${t.cert || '-'}</span></td>
+      </tr>`;
+    }).join('');
+  }
+
+  /* ---- render cards ---- */
+  function renderCards(filtered) {
+    const content  = document.getElementById('content');
+    const noResult = document.getElementById('noResult');
+    const rc       = document.getElementById('resultCount');
+
+    if (!filtered.length) {
+      content.innerHTML = '';
+      noResult.style.display = 'block';
+      rc.textContent = 'Tidak ada hasil';
+      return;
+    }
+    noResult.style.display = 'none';
+    rc.textContent = `Menampilkan ${filtered.length} dari ${DATA.length} personil`;
+
+    content.innerHTML = filtered.map((p, idx) => `
+      <div class="person-card" id="card-${idx}">
+        <div class="print-header">
+          <div>
+            <div class="print-logo">🏗️ SMU TRAINING</div>
+            <div class="print-sub">Record Sertifikat Pelatihan Personil</div>
+          </div>
+          <div class="print-date">Dicetak: ${new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'})}</div>
+        </div>
+
+        <div class="person-header" onclick="toggleCard(${idx})">
+          <div class="avatar">${getInitials(p.nama)}</div>
+          <div class="person-info">
+            <div class="person-name">${p.nama}</div>
+            <div class="person-meta">NIK ${p.nik} &bull; ${p.jabatan}</div>
+          </div>
+          <div class="person-right">
+            <span class="trn-count">${p.pelatihan.length} pelatihan</span>
+            <button class="btn-print-card" onclick="printCard(event,${idx})">🖨️ Print</button>
+            <span class="chevron">⌄</span>
+          </div>
+        </div>
+
+        <div class="trainings-list">
+          <div class="trn-table-wrap">
+            <table class="trn-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Judul Pelatihan</th>
+                  <th>Tanggal Pelaksanaan</th>
+                  <th>Durasi</th>
+                  <th>Kategori</th>
+                  <th>Program</th>
+                  <th>No. Sertifikat</th>
+                </tr>
+              </thead>
+              <tbody>${buildRows(p.pelatihan)}</tbody>
+            </table>
+          </div>
+        </div>
+      </div>`
+    ).join('');
+  }
+
+  /* ---- toggle card ---- */
+  function toggleCard(idx) {
+    document.getElementById('card-'+idx).classList.toggle('open');
+  }
+
+  /* ---- print single card ---- */
+  function printCard(e, idx) {
+    e.stopPropagation();
+    const card = document.getElementById('card-'+idx);
+    card.classList.add('open', 'printing');
+    window.print();
+    card.classList.remove('printing');
+  }
+
+  /* ---- filter ---- */
+  let debounce;
+  function filterCards() {
+    clearTimeout(debounce);
+    debounce = setTimeout(() => {
+      const q = document.getElementById('searchInput').value.toLowerCase().trim();
+      if (!q) { renderCards(DATA); return; }
+      renderCards(DATA.filter(p =>
+        p.nama.toLowerCase().includes(q) ||
+        p.jabatan.toLowerCase().includes(q) ||
+        p.nik.includes(q) ||
+        p.pelatihan.some(t => t.judul.toLowerCase().includes(q) || (t.cert||'').toLowerCase().includes(q))
+      ));
+    }, 200);
+  }
+
+  /* ---- Mulai ambil data saat halaman dibuka ---- */
+  loadData();
+</script>
+</body>
+</html>
