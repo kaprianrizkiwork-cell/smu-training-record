@@ -38,11 +38,17 @@
     box-shadow: 0 4px 20px rgba(0,0,0,0.22);
   }
   .header-top { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+  .update-date { margin-left: auto; text-align: right; flex-shrink: 0; }
+  .update-date .lbl { font-size: 10px; color: #a8c4dd; }
+  .update-date .val { font-size: 12px; font-weight: 600; color: #fff; margin-top: 2px; }
   .logo-icon {
-    width: 46px; height: 46px; background: var(--accent); border-radius: 12px;
-    display: flex; align-items: center; justify-content: center; font-size: 22px;
-    flex-shrink: 0; box-shadow: 0 4px 12px rgba(240,90,40,0.4);
+    width: 56px; height: 56px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; background: white; padding: 4px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    overflow: hidden;
   }
+  .logo-icon img { width: 100%; height: 100%; object-fit: contain; border-radius: 8px; }
   .header-title h1 { font-size: 17px; font-weight: 700; color: #fff; line-height: 1.2; }
   .header-title p  { font-size: 11px; color: #a8c4dd; margin-top: 2px; }
   .stats-bar { display: flex; gap: 12px; flex-wrap: wrap; }
@@ -296,11 +302,12 @@
 
 <header>
   <div class="header-top">
-    <div class="logo-icon">🏗️</div>
+    <div class="logo-icon"><img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAoHBwkHBgoJCAkLCwoMDxkQDw4ODx4WFxIZJCAmJSMgIyIoLTkwKCo2KyIjMkQyNjs9QEBAJjBGS0U+Sjk/QD3/2wBDAQsLCw8NDx0QEB09KSMpPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT3/wAARCABgAH8DASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD2aiiigAooooAKQkAEk4Apk88dtBJNO6xxRqWdmOAAO9edSapefEHVJrS2nex0K2G6eQHDSL7n3weOgHJqZSsb0KDq3ltFbv8ArqdJqXj3SLGc21u0t/ddPKtE38/XpUMfiPxHec2vhd407G5uVQ/liq9u9tpVlHHoltHp9tL8sUzRGS4uvdE6ke7cc9MVFd2UwUTak1tEp5DateFyf+2SEIPoCai8u51qnSWij9+/3Jr82bNtrepqwGoWNjAO5W/UkfgR/WteO/tJWCpcwMx6KsgJrz57vSAcNrugx+0OlBh+ZJqL7TpJYFNY8OzEdPO0vyz+akYpKdglhFLVK3yl+p6dRXPaFrdzeTrA5025h28TWNzu2/7yNyPrzXQ1qnc4KlN03ZhRRRTICiiigAooooAKKKKAPOvilrrIsGjwPgSDzZ8HqM/Kv5gn8BWb4Eu4ToWq2bjLebFPIo6vCCA/1wAc/WsTxrctc+MdSZj9yTyx9FAFZNneXGn3cd1aStFPGcq69v8AEe1ccp+/c+npYVfVVTW+j+e56dr2rS6Pp2qavAFe/kuRaRSEZEEWMrj2I+b3LCvLri4mu52muZXmlY5LyNuJ/GuxsvFun39s9rqlukHmqEkABMMg6jpymDyMZA7YFVbjwT9oQT6Rdo8TfdSZh+jjg/pTneWxOG5cPdVFZ9zlKKvX+iajpgJvLOWNB/y0A3J/30OKo1k1Y9GMlJXi7jo3eGVZInZJFOVdDgj6EV7N4C1+TXdBH2ly93bN5crHqw6qx+o/ka8XruvhRcMmuXlvn5ZLcNj3Vh/8Ua0oytI4MypKdBy6o9VooorsPmAooooAKKKKACiiigDw7xvbNa+MdRVh/rJBIPowBrBr13xz4Ll8QvHe2Dot3Emwo/AkXqOexHNebXXhnWrNys+l3Yx3WMsPzGRXFUg1Jn1WDxVOpSir6pGXVqw1O80uUyWVw8RP3lHKt9VPBprafeKcNZ3IPvC3+FSwaNqVywWDTruQn0hb/CoVzqk4Ne9ax3XhrxMmuyizmWOC/I+QFiI5vUA9UPtyPal1TwfY6osskaCxuY22yMFACMenmIOMHs64HqOtZnhzwHqyajbX+oBLC2t5FlZpHG84OcYHT8a7ma8iuXvr+PJtmt/ssRx/x8OSfujuOcA98ntXRFNr3jxa040qt6D+7v2PGb+xuNMvpbO8jMc8TbWX+o9Qa7P4UWzPrV7c4+WOAJn3Zs/+y1Q+I7J/b9tHwbiKzjWcjnL8/wBK77wJoLaF4eQTrturk+bKD1X0X8B+pNTCHv8AodGMxN8Im95HS0UUV1HzoUUUUAFFFFABRRRQA10WRGR1DKwwQe4rCvLG9spFGlxXDQ46JeDK/wDAZAR+orfopNXLhNw8zlHudaT7z6ovsLOB/wBVbFMM2qzjaV19z/spbwD8zzWtqPhmy1Bi6yXVrKer2s7Rn8hwfyrDn8A3z5EfijUwh/hdi36gis2pHbTqUZLVpfL/ACJXs2gUTajHa2oX/lrqV4bhh7hMhc/jWRqXjfT7GX/iVtLq+pkbI55F/dxk/wBxQB+g59asxfCm1eUPfapd3B74ABP4nNdPo/hfSdD5sbRFlxgyv8zn8T/SkoyfkXKrh46tuXlsvx1OV8JeCbmW/Ot+I8vcs/mJC/Xd/eb+g7V6BRRWkYqKsjir1515c0v+GCiiiqMQooooAwfFHiu38MRWyvBLdXV0+yC3i+85479uo/OqVl4wv3nlh1Tw7d2DLbyTo7OGR9oyVyBwaqfEG10LUZrC11fUX027+aS1ucfKOmQT+R7dOtc54f1LVv7fvtAh1j+3LJ7KU+cPmCHYdvzc98DqRzQB2el+M49U8HXPiBbN40gEhMJcEnb7471n3fxIjtfDml6qNMlk/tCRo1hEoypBI645ziuU8Pa/ptl8KNT065u44r398ggY4clumBVTWoJoPh74RRh5crXDsm8dMklSfzBoA7/SPHqX+tf2TqGl3em3rIXjjnwQ+Bnr9AfyrPsfiTfapA82neFb+6iRihaKVSMjt09xVjTfB+p/8JEde8RalDdXUEJSBII9qLwRk5+p/OuC8HppbaZM1/4qutIkE5xBDPsDDA+Yj9PwoA9C1bx3Np2uQ6Tb6Jc3d3LAswSOQAjIJIxjtirGh+ObfWoNSDWU9reacjPNbS4zgZ6H6jFcn4gjvbz4rWq6LepBdvYBoZnUMCNrHofUd6PBE1ulp4mi1Ayr4iaOU3ImIyygH7v4nn8O1AHQL8S7IeEU1uW0kR5ZjDDahwXkYdcHFP1bx3caRJpdvLoc73moRl1t0mG5DnAU8cmvMtEiuNI03R/E0qC8062umjaAjIhOfvD3J5B9QK6zxvcHVvGHhWbSbtEa5Tdb3G3cFJYYOO/0oA6rw942j1rV59KutPudOv4l3+TNg5HHcfUVBrXxDs9F8Uw6NLbO+4xiScOAIyx7jvgYP41zvgy5Sw8basfFEzjXVQ7ZZCAjxgZO38ACPb8a5eWPUPEGl65qqaPNcJeT+cl4rgCBYySRjqeOPwoA9T8ZeM4/CEdo8lm919pLABXC7doHqPem3fjm1gTQZLe3a4i1hwiMHA8vkA59cE/pXH61qkfiGy8C3Mu2Tzrny5lPILAorA/X+tZN7p9z4e8caXokjE2MWoLcWZb+47DI/DGPqPegDurz4gTxeIL3SbHQLu/mtD85hkHTjnGPeum0a/n1LTY7m6sZrCViQYJTllwcfr1rym6Wyf4la8L/AFyfR0BG2WGTYXOF+Un9a9P8NNbHQbYWWovqMKgqLp33NJyc5P6fhQBJqiaTdYt9UjtZsDcEmUNgevPTpT9KstNtLbOk29tFC/OYEChvy61LeWa3EE4jCJPJG0YlK8jIx161TttJlt7qSZZlGFdY8A5wcbQ3soUAAe9Td3NVGDjvqM/sbQNTu2uvsOn3E6t80nlqxz71burfTrxo4ruK1maJxsSRVYq2MjAPQ4H6VlQeGpU8kSTgxqFDxqzdgACCeex44xnj3uX+jG7vjdIybgqKEfO1sFic49cj8sdDRd22KcKd9JaGqRkYPQ1kyaBoCFg+l6eCFLkfZ0zgdTjFVx4euNohe73QDGeu5uFBHXgYVv8Avr2q3eadPJPM8JRY3gWIBchlAJJA7cg47dKLvsLkhf4iRY9L+1fakht/tEA8sSiMb1A4wDjOBnHFSyaVYS3ZupLK3a4I2mUxjcRjGM9enFZcOgSIEkXyYpii7iByrby7cjsSR+VQzeH7iNo4oW8yFiobcfuY2At1yWIVuf8Aapcz7Feypt2UjVFrpUEX9liCzSOTn7MEUK2efu9O36U4aRpkHkMtjaJ9nP7k+Uo8sk/w+nPpVe70X7VNcTmTMjujIpJCgKACDjuRuGfRqrp4dbywJXhkYSI20qdoAYsQB25P5ACnd9iVCm1fmNK70jT7+US3ljbTyAbQ8kSsQPTJFSwWVtbWv2a3t4ooMEeUiALz146Vjf8ACNyZjBuMx8eaoJG84OWzzzknH4c8VatdHkt7uCbzFYoHMhOSXZiT36devpxRd9gcIJaS/AeNP0WDZEtpYobaRWVBGv7p2IAIHYkgflVu40+0u5opri1hllhOY3dAzIfYnpWT/wAI9M0rPLdh/O+ab5MEsMkYI7AnjPYCo08PXioTJepM5Iba4bYSVw2RnpuCkD/Zx3pXfYr2dP8AnNKfQdKuZnmuNNs5ZXOWd4VJJ9zipNPNjGj2unrCiQHDRxKFCEk9h7g1lJoFwUdDNtVHUQ7iTgALuYjocleh7e9b0cSRAiNFUHk7Rimm2ROMIrR3P//Z" alt="Superkrane"></div>
     <div class="header-title">
       <h1>Record Sertifikat Pelatihan</h1>
       <p>SMU Training — Data realtime dari Spreadsheet</p>
     </div>
+    <div class="update-date" id="updateDate"></div>
   </div>
   <div class="stats-bar" id="statsBar"></div>
 </header>
@@ -384,6 +391,10 @@
       // Selesai loading
       document.getElementById('searchInput').disabled = false;
       initStats();
+      document.getElementById('updateDate').innerHTML =
+        '<div class="lbl">Terakhir Diperbarui</div><div class="val">' +
+        new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) +
+        '</div>';
       renderCards(DATA);
       checkNikParam();
     } catch (err) {
@@ -497,7 +508,7 @@
       <div class="person-card" id="card-${idx}">
         <div class="print-header">
           <div>
-            <div class="print-logo">🏗️ SMU TRAINING</div>
+            <div class="print-logo">SUPERKRANE — SMU TRAINING</div>
             <div class="print-sub">Record Sertifikat Pelatihan Personil</div>
           </div>
           <div class="print-date">Dicetak: ${new Date().toLocaleDateString('id-ID',{day:'2-digit',month:'long',year:'numeric'})}</div>
