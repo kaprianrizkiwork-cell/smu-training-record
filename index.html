@@ -284,7 +284,7 @@
    * KONFIGURASI — Ganti URL_APPS_SCRIPT dengan URL
    * deployment Web App Google Apps Script Anda
    * ===================================================== */
-  const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbza3nSopQCkMJzJ4-IBdr-Y5XUu40NdAWInx_t_hbiV6mVTXKGgvL-Az9aMpBTLXJFP/exec';
+  const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbyPdCI9iiCKwk8JtGpMYhGloYeQ363tW0IPrRWuOTCiyyDzzRCtwsjJo_bsjr1UtIAP/exec';
 
   /* =====================================================
    * State global
@@ -361,17 +361,6 @@
     return s;
   }
 
-  // Bersihkan trn_program: jika angka → kembalikan label default
-  function cleanProgram(val) {
-    if (!val || val === '') return '-';
-    const s = String(val).trim();
-    if (s === '1') return 'Onboarding';
-    if (s === '2') return 'Development';
-    if (s === '3') return 'Retention';
-    if (/^\d+$/.test(s)) return '-';
-    return s;
-  }
-
   // Bersihkan semua data setelah fetch
   function cleanData(raw) {
     return raw.map(p => ({
@@ -382,17 +371,10 @@
         tgl_selesai: formatTgl(t.tgl_selesai),
         durasi:      cleanDurasi(t.durasi),
         kategori:    cleanKategori(t.kategori),
-        trn_program: cleanProgram(t.trn_program),
       }))
     }));
   }
 
-  function progClass(trn) {
-    if (trn && trn.includes('Onboarding'))   return 'on';
-    if (trn && trn.includes('Development'))  return 'dev';
-    return 'ret';
-  }
-  function progLabel(trn) { return trn || '-'; }
   function getInitials(name) {
     const p = name.trim().split(' ');
     return p.length >= 2 ? (p[0][0]+p[1][0]).toUpperCase() : p[0].substring(0,2).toUpperCase();
@@ -412,7 +394,6 @@
   function buildRows(pelatihan) {
     return pelatihan.map((t, i) => {
       const katClass = t.kategori === 'Internal' ? 'badge-int' : 'badge-ext';
-      const pClass   = 'badge-' + progClass(t.trn_program);
       const dateCell = t.tgl_selesai
         ? `<div class="date-range"><span>${t.tgl_mulai}</span><span class="date-end">s/d ${t.tgl_selesai}</span></div>`
         : `<span>${t.tgl_mulai}</span>`;
