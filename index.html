@@ -170,7 +170,7 @@
   .badge-ret { background: var(--ret-bg); color: var(--ret-fg); }
   .badge-dev { background: var(--dev-bg); color: var(--dev-fg); }
 
-  .cert-no { font-family: monospace; font-size: 10px; color: var(--muted); background: var(--bg); padding: 2px 6px; border-radius: 4px; }
+  .cert-no { font-family: inherit; font-size: 13px; color: var(--text); }
 
   /* ========= NO RESULT ========= */
   .no-result { text-align: center; padding: 60px 20px; color: var(--muted); display: none; }
@@ -422,7 +422,6 @@
         <td class="td-date">${dateCell}</td>
         <td style="white-space:nowrap">${t.durasi ? t.durasi+' jam' : '-'}</td>
         <td><span class="badge ${katClass}">${t.kategori || '-'}</span></td>
-        <td><span class="badge ${pClass}">${progLabel(t.trn_program)}</span></td>
         <td><span class="cert-no">${t.cert || '-'}</span></td>
       </tr>`;
     }).join('');
@@ -476,7 +475,6 @@
                   <th>Tanggal Pelaksanaan</th>
                   <th>Durasi</th>
                   <th>Kategori</th>
-                  <th>Program</th>
                   <th>No. Sertifikat</th>
                 </tr>
               </thead>
