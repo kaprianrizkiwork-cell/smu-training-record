@@ -181,6 +181,21 @@
     color: var(--muted); border-top: 1px solid var(--border); margin-top: 16px;
   }
 
+  /* ========= SCAN MODE ========= */
+  body.scan-mode .search-bar { display: none !important; }
+  body.scan-mode header .stats-bar { display: none !important; }
+  body.scan-mode .btn-qr { display: none !important; }
+  body.scan-mode .btn-print-card { display: none !important; }
+  body.scan-mode .trn-count { display: none !important; }
+  body.scan-mode .chevron { display: none !important; }
+  body.scan-mode .person-header { cursor: default; }
+  .scan-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #e8f5e9; color: #2e7d32; border: 1.5px solid #2e7d32;
+    border-radius: 20px; padding: 4px 12px; font-size: 11px; font-weight: 600;
+    margin-top: 6px;
+  }
+
   /* ========= QR BUTTON ========= */
   .btn-qr {
     background: var(--primary); color: white; border: none; cursor: pointer;
@@ -613,16 +628,23 @@
     const params = new URLSearchParams(window.location.search);
     const nik = params.get('nik');
     if (!nik) return;
-    // Filter dan tampilkan hanya personil tersebut, buka card otomatis
+
+    // Aktifkan scan mode — sembunyikan search & fitur lain
+    document.body.classList.add('scan-mode');
+
     const found = DATA.filter(p => p.nik === nik);
     if (found.length) {
       renderCards(found);
+      // Update result count dengan scan badge
+      document.getElementById('resultCount').innerHTML =
+        '<span class="scan-badge">✅ Data Verified — SMU Training</span>';
       setTimeout(() => {
         const card = document.getElementById('card-0');
         if (card) card.classList.add('open');
-        // Sembunyikan search bar agar tampil bersih
-        document.getElementById('searchInput').value = '';
       }, 100);
+    } else {
+      document.getElementById('content').innerHTML =
+        '<div style="text-align:center;padding:60px 20px;color:#c0392b"><div style="font-size:48px;margin-bottom:12px">⚠️</div><div style="font-size:16px;font-weight:700">NIK tidak ditemukan</div><div style="font-size:13px;color:#888;margin-top:8px">Data personil dengan NIK '+nik+' tidak tersedia</div></div>';
     }
   }
 
