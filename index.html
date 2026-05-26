@@ -284,7 +284,7 @@
    * KONFIGURASI — Ganti URL_APPS_SCRIPT dengan URL
    * deployment Web App Google Apps Script Anda
    * ===================================================== */
-  const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbwkVQcjaEF4oJ4CALSoRLDBYSGpEscskgIDY45Tw1UmcJqsKm7q7WAAoxnAmOhjP-NM/exec';
+  const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbxcpjWyGxOucA-1L66jcsrw3FcQFB7QxU2wJ52Lqw1L4G4iRpbVjEPh5BU7mwcmMj4I/exec';
 
   /* =====================================================
    * State global
@@ -309,7 +309,8 @@
       const json = await res.json();
 
       if (json.error) throw new Error(json.error);
-      DATA = json.data || json; // support { data: [...] } atau langsung [...]
+      const raw = json.data || json; // support { data: [...] } atau langsung [...]
+      DATA = cleanData(raw);
 
       // Selesai loading
       document.getElementById('searchInput').disabled = false;
@@ -325,6 +326,67 @@
   }
 
   /* ---- helpers ---- */
+
+  // Format tanggal: bisa berupa string Indo "2 Januari 2025", Date object, atau timestamp string
+  function formatTgl(val) {
+    if (!val || val === '' || val === '-') return '';
+    // Sudah format Indo (mengandung nama bulan Indonesia)
+    const bulanIndo = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+    if (bulanIndo.some(b => String(val).includes(b))) return String(val).trim();
+    // Coba parse sebagai Date
+    const d = new Date(val);
+    if (!isNaN(d.getTime())) {
+      return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+    }
+    return String(val).trim();
+  }
+
+  // Bersihkan durasi: jika timestamp kembalikan '-', jika angka kembalikan angkanya
+  function cleanDurasi(val) {
+    if (!val || val === '') return '';
+    const s = String(val).trim();
+    // Jika mengandung "GMT" atau "Time" → ini timestamp, bukan durasi
+    if (s.includes('GMT') || s.includes('Time') || s.includes('Jan') || s.includes('Feb')) return '';
+    // Jika angka murni atau desimal
+    const num = parseFloat(s);
+    if (!isNaN(num)) return String(num);
+    return s;
+  }
+
+  // Bersihkan kategori: jika angka/tahun → kembalikan 'Internal' sebagai default
+  function cleanKategori(val) {
+    if (!val || val === '') return 'Internal';
+    const s = String(val).trim();
+    if (/^\d+$/.test(s)) return 'Internal'; // angka murni → default
+    return s;
+  }
+
+  // Bersihkan trn_program: jika angka → kembalikan label default
+  function cleanProgram(val) {
+    if (!val || val === '') return '-';
+    const s = String(val).trim();
+    if (s === '1') return 'Onboarding';
+    if (s === '2') return 'Development';
+    if (s === '3') return 'Retention';
+    if (/^\d+$/.test(s)) return '-';
+    return s;
+  }
+
+  // Bersihkan semua data setelah fetch
+  function cleanData(raw) {
+    return raw.map(p => ({
+      ...p,
+      pelatihan: (p.pelatihan || []).map(t => ({
+        ...t,
+        tgl_mulai:   formatTgl(t.tgl_mulai),
+        tgl_selesai: formatTgl(t.tgl_selesai),
+        durasi:      cleanDurasi(t.durasi),
+        kategori:    cleanKategori(t.kategori),
+        trn_program: cleanProgram(t.trn_program),
+      }))
+    }));
+  }
+
   function progClass(trn) {
     if (trn && trn.includes('Onboarding'))   return 'on';
     if (trn && trn.includes('Development'))  return 'dev';
