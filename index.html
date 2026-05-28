@@ -280,7 +280,8 @@
     }
     .print-logo { display: flex; align-items: center; gap: 10px; }
     .print-logo img { height: 48px; width: auto; object-fit: contain; }
-    .person-print-info { display: flex !important; flex-direction: column; gap: 2px; margin-top: 6px; font-size: 12px; color: #333; }
+    .person-print-info { display: flex !important; flex-direction: row; align-items: flex-start; gap: 14px; margin-top: 6px; font-size: 12px; color: #333; }
+    .person-print-info > div { display: flex; flex-direction: column; gap: 3px; }
     .person-print-info span { display: block; }
     .person-meta { display: none !important; }
     .print-logo-text { display: flex; flex-direction: column; }
@@ -369,7 +370,7 @@
    * KONFIGURASI — Ganti URL_APPS_SCRIPT dengan URL
    * deployment Web App Google Apps Script Anda
    * ===================================================== */
-  const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbyz1fgmKTctXjLw_FBP4mwnEwTfFJRseN5Fh-SaL15gPmNISo1yq81O1CvIOp3CLFLx/exec';
+  const URL_APPS_SCRIPT = 'https://script.google.com/macros/s/AKfycbz6dtr72kyA3CtUoZDREMWdRpK4KHzKyCLeou8ijY7AukgQA7_OoM-COaGBQXdKitIE/exec';
 
   /* =====================================================
    * State global
@@ -531,7 +532,7 @@
         <div class="person-header" onclick="toggleCard(${idx})">
           <div class="avatar">${getInitials(p.nama)}</div>
           <div class="person-info">
-            <div class="person-name">Nama : ${p.nama}</div>
+            <div class="person-name">${p.nama}</div>
             <div class="person-meta">NIK : ${p.nik}</div>
             <div class="person-meta">Jabatan : ${p.jabatan}</div>
           </div>
@@ -543,6 +544,13 @@
           </div>
         </div>
 
+        <div class="person-print-info">
+          <div>
+            <span>Nama : ${p.nama}</span>
+            <span>NIK : ${p.nik}</span>
+            <span>Jabatan : ${p.jabatan}</span>
+          </div>
+        </div>
         <div class="trainings-list">
           <div class="trn-table-wrap">
             <table class="trn-table">
