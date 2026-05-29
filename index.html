@@ -70,7 +70,15 @@
     box-shadow: 0 4px 20px rgba(0,0,0,0.22);
   }
   .header-top { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
-  .update-date { margin-left: auto; text-align: right; flex-shrink: 0; }
+  .update-date { text-align: right; flex-shrink: 0; }
+  .header-right { margin-left: auto; display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+  .btn-logout {
+    background: rgba(255,255,255,0.15); color: white; border: 1.5px solid rgba(255,255,255,0.4);
+    border-radius: 8px; padding: 6px 12px; font-family: inherit; font-size: 11px; font-weight: 600;
+    cursor: pointer; transition: all .2s; white-space: nowrap;
+  }
+  .btn-logout:hover { background: rgba(255,255,255,0.25); }
+  body.scan-mode .btn-logout { display: none !important; }
   .update-date .lbl { font-size: 10px; color: #a8c4dd; }
   .update-date .val { font-size: 12px; font-weight: 600; color: #fff; margin-top: 2px; }
   .logo-icon {
@@ -371,7 +379,10 @@
       <h1>Training Records System</h1>
       <p>SMU Training — Data realtime dari Spreadsheet</p>
     </div>
-    <div class="update-date" id="updateDate"></div>
+    <div class="header-right">
+      <div class="update-date" id="updateDate"></div>
+      <button class="btn-logout" onclick="doLogout()">⎋ Logout</button>
+    </div>
   </div>
   <div class="stats-bar" id="statsBar"></div>
 </header>
@@ -734,6 +745,18 @@
       document.getElementById('content').innerHTML =
         '<div style="text-align:center;padding:60px 20px;color:#c0392b"><div style="font-size:48px;margin-bottom:12px">⚠️</div><div style="font-size:16px;font-weight:700">NIK tidak ditemukan</div><div style="font-size:13px;color:#888;margin-top:8px">Data personil dengan NIK '+nik+' tidak tersedia</div></div>';
     }
+  }
+
+  /* ---- LOGOUT ---- */
+  function doLogout() {
+    if (!confirm('Yakin ingin logout?')) return;
+    sessionStorage.removeItem('trs_auth');
+    sessionStorage.removeItem('trs_user');
+    document.getElementById('appPage').style.display   = 'none';
+    document.getElementById('loginPage').style.display = 'flex';
+    document.getElementById('loginUser').value = '';
+    document.getElementById('loginPass').value = '';
+    document.getElementById('loginError').textContent  = '';
   }
 
   /* ---- LOGIN ---- */
